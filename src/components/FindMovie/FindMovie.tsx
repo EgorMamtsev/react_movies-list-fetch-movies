@@ -7,7 +7,7 @@ type Props = {
   query: string;
   setQuery: (value: string) => void;
   movie: Movie | null;
-  addMovie: React.Dispatch<React.SetStateAction<Movie[]>>;
+  addMovie: (newMovie: Movie) => void;
   setMovie: React.Dispatch<React.SetStateAction<Movie | null>>;
   isError: boolean;
   isSearched: boolean;
@@ -65,7 +65,6 @@ export const FindMovie: React.FC<Props> = ({
               onClick={event => {
                 event.preventDefault();
                 onSubmit(query);
-                setIsSearched(true);
               }}
               disabled={query.trim() === '' || isLoading}
             >
@@ -80,12 +79,7 @@ export const FindMovie: React.FC<Props> = ({
                 className="button is-primary"
                 onClick={() => {
                   if (movie) {
-                    addMovie(prev => {
-                      if (prev.some(m => m.imdbId === movie.imdbId)) {
-                        return prev;
-                      }
-                      return [...prev, movie];
-                    });
+                    addMovie(movie);
                     setMovie(null);
                     setQuery('');
                     setIsSearched(false);

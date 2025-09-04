@@ -5,7 +5,7 @@ import { FindMovie } from './components/FindMovie';
 import { Movie } from './types/Movie';
 import { getMovie } from './api';
 import { MovieData } from './types/MovieData';
-import { ResponseError } from './types/ReponseError';
+import { ResponseError } from './types/ResponseError';
 
 export const App = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -58,6 +58,7 @@ export const App = () => {
       })
       .finally(() => {
         setIsLoading(false);
+        setIsSearched(true);
       });
   }, [userRequest]);
 
@@ -66,6 +67,14 @@ export const App = () => {
       setIsError(false);
     }
   }, [query]);
+
+  const handleAddMovie = (newMovie: Movie) => {
+    setMovies(prev =>
+      prev.some(m => m.imdbId === newMovie.imdbId) // перевірка дубліката
+        ? prev
+        : [...prev, newMovie],
+    );
+  };
 
   return (
     <div className="page">
@@ -80,7 +89,7 @@ export const App = () => {
           setQuery={setQuery}
           movie={movie}
           setMovie={setMovie}
-          addMovie={setMovies}
+          addMovie={handleAddMovie}
           isError={isError}
           isSearched={isSearched}
           setIsSearched={setIsSearched}
